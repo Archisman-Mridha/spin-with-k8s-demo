@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spin-with-k8s
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spin-with-k8s
+  template:
+    metadata:
+      labels:
+        app: spin-with-k8s
+    spec:
+      runtimeClassName: wasmtime-spin
+      containers:
+        - name: spin-with-k8s
+          image: archismanmridha/spin-http-rust-component:1.0.0
+          command: ["/"]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: spin-with-k8s
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: spin-with-k8s
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spin-with-k8s
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /spin-with-k8s
+            pathType: Prefix
+            backend:
+              service:
+                name: spin-with-k8s
+                port:
+                  number: 80

@@ -1,0 +1,16 @@
+spin_manifest_version = "1"
+authors = ["Archisman-Mridha <archismanmridha12345@gmail.com>"]
+description = "Demonstrating how to deploy WASM applications to Kubernetes using the Spin framework"
+name = "spin-with-k8s"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "spin-with-k8s"
+source = "target/wasm32-wasi/release/spin_with_k8s.wasm"
+allowed_http_hosts = []
+[component.trigger]
+route = "/..."
+[component.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

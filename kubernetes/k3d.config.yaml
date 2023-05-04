@@ -1,0 +1,14 @@
+apiVersion: k3d.io/v1alpha3
+kind: Simple
+
+name: spin-with-k8s
+
+image: ghcr.io/deislabs/containerd-wasm-shims/examples/k3d:v0.5.1
+
+servers: 1
+agents: 2
+
+ports:
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
